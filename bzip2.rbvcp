@@ -4,6 +4,7 @@ MinIDEVersion=20070100
 Class=App;App.rbbas;&h2C8957FF;&h0;false
 BuildSteps=Build Automation;Build Automation.rbbas;&h791737FF;&h0;false
 Module=BZip2;BZip2/BZip2.rbbas;&h276C3FFF;&h0;false
+Class=BZ2Stream;BZip2/BZ2Stream.rbbas;&h447D27FF;&h276C3FFF;false
 Class=BZip2Exception;BZip2/BZip2Exception.rbbas;&h151077FF;&h276C3FFF;false
 Class=Decompressor;BZip2/Decompressor.rbbas;&h39F7B7FF;&h276C3FFF;false
 Class=Compressor;BZip2/Compressor.rbbas;&h118307FF;&h276C3FFF;false
