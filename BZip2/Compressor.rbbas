@@ -2,7 +2,7 @@
 Protected Class Compressor
 Inherits bz2Engine
 	#tag Method, Flags = &h0
-		Function Compress(ReadFrom As Readable, WriteTo As Writeable, Action As Integer = BZip2.BZ_RUN, ReadCount As Integer = - 1) As Boolean
+		Function Compress(ReadFrom As Readable, WriteTo As Writeable, ReadCount As Integer = - 1) As Boolean
 		  ' Reads uncompressed bytes from ReadFrom and writes all compressed output to WriteTo. If
 		  ' ReadCount is specified then exactly ReadCount uncompressed bytes are read; otherwise
 		  ' uncompressed bytes will continue to be read until ReadFrom.EOF. If ReadFrom represents
@@ -35,7 +35,7 @@ Inherits bz2Engine
 		      If outbuff.Size <> CHUNK_SIZE Then outbuff.Size = CHUNK_SIZE
 		      bzstruct.next_out = outbuff
 		      bzstruct.avail_out = outbuff.Size
-		      mLastError = BZ2_bzCompress(bzstruct, Action)
+		      mLastError = BZ2_bzCompress(bzstruct, BZ_RUN)
 		      ' consume any output
 		      Dim have As UInt32 = CHUNK_SIZE - bzstruct.avail_out
 		      If have > 0 Then
@@ -43,13 +43,11 @@ Inherits bz2Engine
 		        WriteTo.Write(outbuff)
 		      End If
 		      ' keep going until an error
-		    Loop Until mLastError < 0 Or (Action > 0 And mlastError > 1)
+		    Loop Until mLastError <> BZ_RUN_OK Or (ReadFrom <> Nil And ReadFrom.EOF)
 		    
-		  Loop Until (ReadCount > -1 And count >= ReadCount) Or ReadFrom = Nil Or ReadFrom.EOF' Or Action <> BZ_RUN
+		  Loop Until (ReadCount > -1 And count >= ReadCount) Or ReadFrom = Nil Or ReadFrom.EOF
 		  
-		  If Action = BZ_FINISH And mLastError <>  BZ_STREAM_END Then Raise New BZip2Exception(mLastError)
-		  If Action = BZ_FLUSH And mLastError <> BZ_FLUSH_OK Then Raise New BZip2Exception(mLastError)
-		  Return bzstruct.avail_in = 0 And (mLastError = BZ_OK Or mLastError = BZ_STREAM_END)
+		  Return mLastError = BZ_RUN_OK
 		  
 		  
 		End Function
