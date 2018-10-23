@@ -43,11 +43,11 @@ Inherits bz2Engine
 		        WriteTo.Write(outbuff)
 		      End If
 		      ' keep going until an error
-		    Loop Until mLastError <> BZ_RUN_OK Or (ReadFrom <> Nil And ReadFrom.EOF)
+		    Loop Until mLastError <> BZ_RUN_OK Or (ReadCount > -1 And count >= ReadCount And bzstruct.avail_out <> 0)
 		    
 		  Loop Until (ReadCount > -1 And count >= ReadCount) Or ReadFrom = Nil Or ReadFrom.EOF
 		  
-		  Return mLastError = BZ_RUN_OK
+		  Return mLastError = BZ_RUN_OK Or (mLastError = BZ_PARAM_ERROR And ReadFrom <> Nil And ReadFrom.EOF)
 		  
 		  
 		End Function
@@ -124,7 +124,7 @@ Inherits bz2Engine
 		      WriteTo.Write(outbuff)
 		    End If
 		    ' keep going until an error
-		  Loop Until mLastError <> BZ_FLUSH_OK
+		  Loop Until mLastError <> BZ_FLUSH_OK' Or mLastError < 0
 		  
 		  Return mLastError = BZ_RUN
 		End Function
