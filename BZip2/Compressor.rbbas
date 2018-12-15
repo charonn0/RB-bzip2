@@ -19,7 +19,7 @@ Inherits bz2Engine
 		  Dim outbuff As New MemoryBlock(CHUNK_SIZE)
 		  Dim count As Integer
 		  ' The outer loop reads uncompressed bytes from ReadFrom until EOF, using them as input
-		  ' The inner loop provides more output space, calls deflate, and writes any output to WriteTo
+		  ' The inner loop provides more output space, calls BZ2_bzCompress, and writes any output to WriteTo
 		  Do
 		    Dim chunk As MemoryBlock
 		    Dim sz As Integer
