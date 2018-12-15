@@ -25,6 +25,290 @@ Protected Module BZip2
 	#tag EndExternalMethod
 
 	#tag Method, Flags = &h1
+		Protected Function Compress(Source As FolderItem, Destination As FolderItem, CompressionLevel As Integer = BZip2.BZ_DEFAULT_COMPRESSION, Overwrite As Boolean = False) As Boolean
+		  ' Compress the Source file into the Destination file.
+		  
+		  Dim dst As BinaryStream = BinaryStream.Create(Destination, Overwrite)
+		  Dim src As BinaryStream = BinaryStream.Open(Source)
+		  Dim ok As Boolean
+		  Try
+		    ' calls Compress(Readable, Writeable, Integer) As Boolean
+		    ok = Compress(src, dst, CompressionLevel)
+		  Finally
+		    src.Close
+		    dst.Close
+		  End Try
+		  Return ok
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function Compress(Source As FolderItem, CompressionLevel As Integer = BZip2.BZ_DEFAULT_COMPRESSION) As MemoryBlock
+		  ' Compress the Source file and return it.
+		  
+		  Dim buffer As New MemoryBlock(0)
+		  Dim dst As New BinaryStream(buffer)
+		  Dim src As BinaryStream = BinaryStream.Open(Source)
+		  Dim ok As Boolean
+		  Try
+		    ' calls Compress(Readable, Writeable, Integer) As Boolean
+		    ok = Compress(src, dst, CompressionLevel)
+		  Finally
+		    src.Close
+		    dst.Close
+		  End Try
+		  If ok Then Return buffer
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function Compress(Source As FolderItem, Destination As Writeable, CompressionLevel As Integer = BZip2.BZ_DEFAULT_COMPRESSION) As Boolean
+		  ' Compress the Source file into the Destination stream. 
+		  
+		  Dim src As BinaryStream = BinaryStream.Open(Source)
+		  Dim ok As Boolean
+		  Try
+		    ' calls Compress(Readable, Writeable, Integer) As Boolean
+		    ok = Compress(src, Destination, CompressionLevel)
+		  Finally
+		    src.Close
+		  End Try
+		  Return ok
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function Compress(Source As MemoryBlock, Destination As FolderItem, CompressionLevel As Integer = BZip2.BZ_DEFAULT_COMPRESSION, Overwrite As Boolean = False) As Boolean
+		  ' Compress the Source data into the Destination file. 
+		  
+		  Dim dst As BinaryStream = BinaryStream.Create(Destination, Overwrite)
+		  Dim ok As Boolean
+		  Try
+		    ' calls Compress(MemoryBlock, Writeable, Integer) As Boolean
+		    ok = Compress(Source, dst, CompressionLevel)
+		  Finally
+		    dst.Close
+		  End Try
+		  Return ok
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function Compress(Source As MemoryBlock, CompressionLevel As Integer = BZip2.BZ_DEFAULT_COMPRESSION) As MemoryBlock
+		  ' Compress the Source data and return it. 
+		  
+		  Dim buffer As New MemoryBlock(0)
+		  Dim dst As New BinaryStream(buffer)
+		  Dim src As New BinaryStream(Source)
+		  ' calls Compress(Readable, Writeable, Integer) As Boolean
+		  If Not Compress(src, dst, CompressionLevel) Then Return Nil
+		  dst.Close
+		  Return buffer
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function Compress(Source As MemoryBlock, Destination As Writeable, CompressionLevel As Integer = BZip2.BZ_DEFAULT_COMPRESSION) As Boolean
+		  ' Compress the Source data into the Destination stream. 
+		  
+		  Dim src As New BinaryStream(Source)
+		  ' calls Compress(Readable, Writeable, Integer) As Boolean
+		  Return Compress(src, Destination, CompressionLevel)
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function Compress(Source As Readable, Destination As FolderItem, CompressionLevel As Integer = BZip2.BZ_DEFAULT_COMPRESSION, Overwrite As Boolean = False) As Boolean
+		  ' Compress the Source stream into the Destination file.
+		  
+		  Dim dst As BinaryStream = BinaryStream.Create(Destination, Overwrite)
+		  Dim ok As Boolean
+		  Try
+		    ' calls Compress(Readable, Writeable, Integer) As Boolean
+		    ok = Compress(Source, dst, CompressionLevel)
+		  Finally
+		    dst.Close
+		  End Try
+		  Return ok
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function Compress(Source As Readable, CompressionLevel As Integer = BZip2.BZ_DEFAULT_COMPRESSION) As MemoryBlock
+		  ' Compress the Source stream and return it. 
+		  
+		  Dim buffer As New MemoryBlock(0)
+		  Dim stream As New BinaryStream(buffer)
+		  ' calls Compress(Readable, Writeable, Integer) As Boolean
+		  If Not Compress(Source, stream, CompressionLevel) Then Return Nil
+		  stream.Close
+		  Return buffer
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function Compress(Source As Readable, Destination As Writeable, CompressionLevel As Integer = BZip2.BZ_DEFAULT_COMPRESSION) As Boolean
+		  ' Deflate the Source stream and write the output to the Destination stream. Use Decompress to reverse.
+		  
+		  Dim bz As BZ2Stream = BZ2Stream.Create(Destination, CompressionLevel)
+		  Try
+		    Do Until Source.EOF
+		      bz.Write(Source.Read(CHUNK_SIZE))
+		    Loop
+		    bz.Close
+		  Catch
+		    Return False
+		  End Try
+		  Return True
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function Decompress(Source As FolderItem) As MemoryBlock
+		  ' Decompress the Source file and return it.
+		  
+		  Dim buffer As New MemoryBlock(0)
+		  Dim dst As New BinaryStream(buffer)
+		  Dim src As BinaryStream = BinaryStream.Open(Source)
+		  Dim ok As Boolean
+		  Try
+		    ' calls Decompress(Readable, Writeable) As Boolean
+		    ok = Decompress(src, dst)
+		  Finally
+		    src.Close
+		    dst.Close
+		  End Try
+		  If ok Then Return buffer
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function Decompress(Source As FolderItem, Destination As FolderItem, Overwrite As Boolean = False) As Boolean
+		  ' Decompress the Source file and write the output to the Destination file. 
+		  
+		  Dim dst As BinaryStream = BinaryStream.Create(Destination, Overwrite)
+		  Dim src As BinaryStream = BinaryStream.Open(Source)
+		  Dim ok As Boolean
+		  Try
+		    ' calls Decompress(Readable, Writeable) As Boolean
+		    ok = Decompress(src, dst)
+		  Finally
+		    src.Close
+		    dst.Close
+		  End Try
+		  Return ok
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function Decompress(Source As FolderItem, Destination As Writeable) As Boolean
+		  ' Decompresses the Source file into the Destination stream.
+		  
+		  Dim src As BinaryStream = BinaryStream.Open(Source)
+		  Dim ok As Boolean
+		  Try
+		    ' calls Decompress(Readable, Writeabler) As Boolean
+		    ok = Decompress(src, Destination)
+		  Finally
+		    src.Close
+		  End Try
+		  Return ok
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function Decompress(Source As MemoryBlock) As MemoryBlock
+		  ' Decompress the Source data and return it.
+		  
+		  Dim src As New BinaryStream(Source)
+		  ' calls Decompress(Readable) As MemoryBlock
+		  Return Decompress(src)
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function Decompress(Source As MemoryBlock, Destination As FolderItem, Overwrite As Boolean = False) As Boolean
+		  ' Decompress the Source data into the Destination file.
+		  
+		  Dim dst As BinaryStream = BinaryStream.Create(Destination, Overwrite)
+		  Dim src As New BinaryStream(Source)
+		  Dim ok As Boolean
+		  Try
+		    ' calls Decompress(Readable, Writeable) As Boolean
+		    ok = Decompress(src, dst)
+		  Finally
+		    src.Close
+		    dst.Close
+		  End Try
+		  Return ok
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function Decompress(Source As MemoryBlock, Destination As Writeable) As Boolean
+		  ' Decompress the Source data into the Destination stream.
+		  
+		  Dim src As New BinaryStream(Source)
+		  Dim ok As Boolean
+		  Try
+		    ' calls Decompress(Readable, Writeable) As Boolean
+		    ok = Decompress(src, Destination)
+		  Finally
+		    src.Close
+		  End Try
+		  Return ok
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function Decompress(Source As Readable) As MemoryBlock
+		  ' Decompress the Source stream and return it.
+		  
+		  Dim buffer As New MemoryBlock(0)
+		  Dim stream As New BinaryStream(buffer)
+		  ' calls Decompress(Readable, Writeable) As Boolean
+		  If Not Decompress(Source, stream) Then Return Nil
+		  stream.Close
+		  Return buffer
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function Decompress(Source As Readable, Destination As FolderItem, Overwrite As Boolean = False) As Boolean
+		  ' Decompress the Source stream into the Destination file.
+		  
+		  Dim dst As BinaryStream = BinaryStream.Create(Destination, Overwrite)
+		  Dim ok As Boolean
+		  Try
+		    ' calls Decompress(Readable, Writeable) As Boolean
+		    ok = Decompress(Source, dst)
+		  Finally
+		    dst.Close
+		  End Try
+		  Return ok
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function Decompress(Source As Readable, Destination As Writeable) As Boolean
+		  ' Decompress the Source stream and write the output to the Destination stream.
+		  
+		  Dim bz As BZ2Stream = BZ2Stream.Open(Source)
+		  Try
+		    bz.BufferedReading = False
+		    Do Until bz.EOF
+		      Dim data As MemoryBlock = bz.Read(CHUNK_SIZE)
+		      If data <> Nil And data.Size > 0 Then Destination.Write(Data)
+		    Loop
+		    bz.Close
+		  Catch
+		    Return False
+		  End Try
+		  Return True
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
 		Protected Function IsAvailable() As Boolean
 		  Static mIsAvailable As Boolean
 		  
