@@ -61,7 +61,7 @@ Inherits bz2Engine
 		  // Calling the overridden superclass constructor.
 		  // Constructor() -- From bz2Engine
 		  Super.Constructor()
-		  
+		  If BlockSize100K < 0 Then BlockSize100K = BZ_DEFAULT_COMPRESSION
 		  ' Open the compressed stream
 		  mLastError = BZ2_bzCompressInit(bzstruct, BlockSize100K, Verbosity, WorkFactor)
 		  

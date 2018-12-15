@@ -33,6 +33,57 @@ Protected Module BZip2
 		End Function
 	#tag EndMethod
 
+	#tag Method, Flags = &h21
+		Private Function IsBZipped(Extends Target As BinaryStream) As Boolean
+		  //Checks the BZ2 magic number. Returns True if the Target is likely a BZ2 stream
+		  
+		  Dim IsBZ2 As Boolean
+		  Dim pos As UInt64 = Target.Position
+		  If Target.Read(3) = "BZh" Then IsBZ2 = True 'maybe
+		  Target.Position = pos
+		  Return IsBZ2
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function IsBZipped(Extends TargetFile As FolderItem) As Boolean
+		  //Checks the BZ2 magic number. Returns True if the TargetFile is likely a BZ2 stream
+		  
+		  If Not TargetFile.Exists Then Return False
+		  If TargetFile.Directory Then Return False
+		  Dim bs As BinaryStream
+		  Dim IsBZ2 As Boolean
+		  Try
+		    bs = BinaryStream.Open(TargetFile)
+		    IsBZ2 = bs.IsBZipped()
+		  Catch
+		    IsBZ2 = False
+		  Finally
+		    If bs <> Nil Then bs.Close
+		  End Try
+		  Return IsBZ2
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function IsBZipped(Extends Target As MemoryBlock) As Boolean
+		  //Checks the BZ2 magic number. Returns True if the Target is likely a BZ2 stream
+		  
+		  If Target.Size = -1 Then Return False
+		  Dim bs As BinaryStream
+		  Dim IsBZ2 As Boolean
+		  Try
+		    bs = New BinaryStream(Target)
+		    IsBZ2 = bs.IsBZipped()
+		  Catch
+		    IsBZ2 = False
+		  Finally
+		    If bs <> Nil Then bs.Close
+		  End Try
+		  Return IsBZ2
+		End Function
+	#tag EndMethod
+
 
 	#tag Constant, Name = BZ_CONFIG_ERROR, Type = Double, Dynamic = False, Default = \"-9", Scope = Private
 	#tag EndConstant
@@ -91,10 +142,10 @@ Protected Module BZip2
 	#tag Constant, Name = CHUNK_SIZE, Type = Double, Dynamic = False, Default = \"16384", Scope = Private
 	#tag EndConstant
 
-	#tag Constant, Name = libbzip2, Type = String, Dynamic = False, Default = \"libbzip2.so.1", Scope = Private
+	#tag Constant, Name = libbzip2, Type = String, Dynamic = False, Default = \"libbz2.so.1", Scope = Private
 		#Tag Instance, Platform = Windows, Language = Default, Definition  = \"bzip2.dll"
-		#Tag Instance, Platform = Mac OS, Language = Default, Definition  = \"/usr/lib/libbzip2.dylib"
-		#Tag Instance, Platform = Linux, Language = Default, Definition  = \"libbzip2.so.1"
+		#Tag Instance, Platform = Mac OS, Language = Default, Definition  = \"/usr/lib/libbz2.dylib"
+		#Tag Instance, Platform = Linux, Language = Default, Definition  = \"libbz2.so.1"
 	#tag EndConstant
 
 
