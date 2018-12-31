@@ -11,8 +11,7 @@ Inherits bz2Engine
 		  ' to WriteTo in chunks no greater than CHUNK_SIZE. Consult the zlib documentation before
 		  ' changing CHUNK_SIZE. If this method returns True then all uncompressed bytes were
 		  ' processed and the compressor is ready for more input. Depending on the state of the
-		  ' compressor and the Flushing parameter, compressed output might not be written until a
-		  ' subsequent call to this method.
+		  ' compressor, compressed output might not be written until a subsequent call to this method.
 		  
 		  If Not IsOpen Then Return False
 		  
