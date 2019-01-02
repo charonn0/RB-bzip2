@@ -7,7 +7,7 @@ Inherits RuntimeException
 		  
 		  Select Case ErrorCode
 		  Case BZ_CONFIG_ERROR
-		    Me.Message = "The BZip2 library was not compiled for the currect CPU architecture."
+		    Me.Message = "The BZip2 library was not compiled for the current CPU architecture."
 		  Case BZ_SEQUENCE_ERROR
 		    Me.Message = "An invalid sequence of BZip2 commands was used."
 		  Case BZ_PARAM_ERROR
