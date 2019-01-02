@@ -24,6 +24,10 @@ Protected Module BZip2
 		Private Soft Declare Function BZ2_bzDecompressInit Lib libbzip2 (ByRef Stream As bz_stream, Verbosity As Integer, Small As Integer) As Integer
 	#tag EndExternalMethod
 
+	#tag ExternalMethod, Flags = &h21
+		Private Soft Declare Function BZ2_bzlibVersion Lib libbzip2 () As Ptr
+	#tag EndExternalMethod
+
 	#tag Method, Flags = &h1
 		Protected Function Compress(Source As FolderItem, Destination As FolderItem, CompressionLevel As Integer = BZip2.BZ_DEFAULT_COMPRESSION, Overwrite As Boolean = False) As Boolean
 		  ' Compress the Source file into the Destination file.
@@ -365,6 +369,14 @@ Protected Module BZip2
 		    If bs <> Nil Then bs.Close
 		  End Try
 		  Return IsBZ2
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function Version() As String
+		  If Not BZip2.IsAvailable Then Return ""
+		  Dim mb As MemoryBlock = BZ2_bzlibVersion()
+		  Return mb.CString(0)
 		End Function
 	#tag EndMethod
 
