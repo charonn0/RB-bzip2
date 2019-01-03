@@ -19,6 +19,7 @@ Implements Readable,Writeable
 		  mCompressor = Nil
 		  mDecompressor = Nil
 		  mSourceMB = Nil
+		  mReadBuffer = ""
 		End Sub
 	#tag EndMethod
 
