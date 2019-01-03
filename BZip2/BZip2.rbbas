@@ -462,7 +462,7 @@ Protected Module BZip2
 	#tag EndConstant
 
 	#tag Constant, Name = libbzip2, Type = String, Dynamic = False, Default = \"libbz2.so.1", Scope = Private
-		#Tag Instance, Platform = Windows, Language = Default, Definition  = \"bzip2.dll"
+		#Tag Instance, Platform = Windows, Language = Default, Definition  = \"libbz2.dll"
 		#Tag Instance, Platform = Mac OS, Language = Default, Definition  = \"/usr/lib/libbz2.dylib"
 		#Tag Instance, Platform = Linux, Language = Default, Definition  = \"libbz2.so.1"
 	#tag EndConstant
