@@ -3,9 +3,8 @@ Protected Class Decompressor
 Inherits bz2Engine
 	#tag Method, Flags = &h0
 		Sub Constructor(Verbosity As Integer = 0, LowMemoryMode As Boolean = False)
-		  ' Construct a new Inflater instance using the specified Encoding. Encoding control,
-		  ' among other things, the type of compression being used. (For GZip pass GZIP_ENCODING)
-		  ' If the inflate engine could not be initialized an exception will be raised.
+		  ' Construct a new Decompressor instance, optionally specifying the Verbosity and memory mode.
+		  ' If the BZip2 engine could not be initialized an exception will be raised.
 		  
 		  // Calling the overridden superclass constructor.
 		  // Constructor() -- From bz2Engine
