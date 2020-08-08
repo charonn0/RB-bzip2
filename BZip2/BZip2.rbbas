@@ -152,7 +152,7 @@ Protected Module BZip2
 
 	#tag Method, Flags = &h1
 		Protected Function Compress(Source As Readable, Destination As Writeable, CompressionLevel As Integer = BZip2.BZ_DEFAULT_COMPRESSION) As Boolean
-		  ' Deflate the Source stream and write the output to the Destination stream. Use Decompress to reverse.
+		  ' Compress the Source stream and write the output to the Destination stream. Use Decompress to reverse.
 		  
 		  Dim bz As BZ2Stream = BZ2Stream.Create(Destination, CompressionLevel)
 		  Try
