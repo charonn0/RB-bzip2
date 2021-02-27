@@ -1,5 +1,5 @@
 ## Introduction
-[BZip2](https://en.wikipedia.org/wiki/BZip2) is commonly used general purpose data compression algorithm. 
+[BZip2](https://en.wikipedia.org/wiki/BZip2) is a commonly used general purpose data compression algorithm. 
 
 **RB-BZip2** is a BZip2 [binding](http://en.wikipedia.org/wiki/Language_binding) for Realbasic and Xojo projects.
 
@@ -89,6 +89,6 @@ This example opens an existing bzip2 file and decompresses it into a `MemoryBloc
 ### Ensure the bzip2 shared library is installed
 bzip2 is installed by default on many Unix-like operating systems, however it may need to be installed separately.
 
-Windows does not have it installed by default, you will need to ship the DLL with your application. You can use pre-built DLL available [here](http://gnuwin32.sourceforge.net/packages/bzip2.htm) (Win32x86), or you can build them yourself from source: ftp://sources.redhat.com/pub/bzip2/v102/bzip2-1.0.2.tar.gz . 
+Windows does not have it installed by default, you will need to ship the DLL with your application. You can use pre-built DLL available [here](http://gnuwin32.sourceforge.net/packages/bzip2.htm) (Win32x86), or you can build them yourself from [source](ftp://sources.redhat.com/pub/bzip2/v102/bzip2-1.0.2.tar.gz). 
 
 RB-bzip2 will raise a PlatformNotSupportedException when used if all required DLLs/SOs/DyLibs are not available at runtime. 
