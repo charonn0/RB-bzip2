@@ -17,11 +17,11 @@ The easiest way to use this project are the utility methods in the BZip2 module:
 
 These methods are overloaded with several useful variations on input and output parameters. All variations follow either this signature:
 
-```vbnet
+```realbasic
  function(source, destination, options[...]) As Boolean
 ```
 or this signature:
-```vbnet
+```realbasic
  function(source, options[...]) As MemoryBlock
 ```
 
@@ -32,7 +32,7 @@ The second way to use BZip2 is with the [`BZ2Stream`](https://github.com/charonn
 
 Instances of `BZ2Stream` can be created from MemoryBlocks, FolderItems, and objects that implement the `Readable` and/or `Writeable` interfaces. For example, creating an in-memory compression stream from a zero-length MemoryBlock and writing a string to it:
 
-```vbnet
+```realbasic
   Dim output As New MemoryBlock(0)
   Dim z As New BZip2.BZ2Stream(output) ' zero-length creates a compressor
   z.Write("Hello, world!")
@@ -40,7 +40,7 @@ Instances of `BZ2Stream` can be created from MemoryBlocks, FolderItems, and obje
 ```
 The string will be processed through the compressor and written to the `output` MemoryBlock. To create a decompressor pass a MemoryBlock whose size is > 0 (continuing from above):
 
-```vbnet
+```realbasic
   z = New BZip2.BZ2Stream(output) ' output contains the compressed string
   MsgBox(z.Read(64)) ' read the decompressed string
 ```
@@ -51,7 +51,7 @@ The third and final way to use this project is through the [Compressor](https://
 
 ## More examples
 This example compresses and decompresses a MemoryBlock:
-```vbnet
+```realbasic
   Dim data As MemoryBlock = "Potentially very large MemoryBlock goes here!"
   Dim comp As MemoryBlock = BZip2.Compress(data)
   Dim dcmp As MemoryBlock = BZip2.Decompress(comp)
@@ -59,7 +59,7 @@ This example compresses and decompresses a MemoryBlock:
 
 This example bzips a file:
 
-```vbnet
+```realbasic
   Dim src As FolderItem = GetOpenFolderItem("") ' a file to be bzipped
   Dim dst As FolderItem = src.Parent.Child(src.Name + ".bz2")
   If BZip2.Compress(src, dst) Then 
@@ -70,7 +70,7 @@ This example bzips a file:
 ```
 
 This example opens an existing bzip2 file and decompresses it into a `MemoryBlock`:
-```vbnet
+```realbasic
   Dim f As FolderItem = GetOpenFolderItem("") ' the bzip file to open
   Dim data As MemoryBlock = BZip2.Decompress(f)
   If data <> Nil Then
