@@ -119,7 +119,7 @@ Implements Readable,Writeable
 		Function EOF() As Boolean
 		  // Part of the Readable interface.
 		  ' Returns True if there is no more output to read (decompression only)
-		  Return mSource <> Nil And mSource.EOF And mDecompressor <> Nil And mDecompressor.Avail_In = 0
+		  Return mSource <> Nil And mSource.EOF And mDecompressor <> Nil And mDecompressor.Avail_In = 0 And mReadBuffer = ""
 		End Function
 	#tag EndMethod
 
