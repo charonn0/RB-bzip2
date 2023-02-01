@@ -155,6 +155,21 @@ Implements Readable,Writeable
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function Lookahead(encoding As TextEncoding = Nil) As String
+		  ' Returns the contents of the read buffer if BufferedReading is True (the default). If there
+		  ' are fewer than two bytes remaining in the buffer then a new chunk is read into the buffer.
+		  
+		  If Me.BufferedReading = False Then Return ""
+		  If mReadBuffer.LenB < 2 Then
+		    mBufferedReading = False
+		    mReadBuffer = mReadBuffer + Me.Read(CHUNK_SIZE, encoding)
+		    mBufferedReading = True
+		  End If
+		  Return DefineEncoding(mReadBuffer, encoding)
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		 Shared Function Open(InputStream As FolderItem) As BZip2.BZ2Stream
 		  ' Create a decompression stream where the compressed input is read from the Source file.
 		  
@@ -233,6 +248,59 @@ Implements Readable,Writeable
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function ReadLine(encoding As TextEncoding = Nil, EOL As String = "") As String
+		  ' Reads one line of decompressed text from the compressed stream.
+		  ' If EOL is not specified then the target platform EOL marker is used by default.
+		  
+		  If mDecompressor = Nil Then
+		    Dim e As New NilObjectException
+		    e.Message = "The stream is not readable."
+		    Raise e
+		  ElseIf Not BufferedReading Then
+		    Dim e As New IOException
+		    e.Message = "The stream is not buffered."
+		    Raise e
+		  End If
+		  
+		  If EOL = "" Then
+		    #If TargetWin32 Then
+		      EOL = EndOfLine.Windows
+		    #ElseIf TargetMacOS Then
+		      EOL = EndOfLine.Macintosh
+		    #Else
+		      EOL = EndOfLine.UNIX
+		    #endif
+		  End If
+		  
+		  ' try the easy way
+		  Dim i As Integer = InStrB(Me.Lookahead, EOL)
+		  If i > 0 Then Return Me.Read(i + EOL.LenB - 1, encoding)
+		  
+		  ' try the hard way
+		  Dim data As New MemoryBlock(0)
+		  Dim ret As New BinaryStream(data)
+		  Dim lastchar As String
+		  Do Until Me.EOF
+		    Dim char As String = Me.Read(1, encoding)
+		    If char = "" Then Continue
+		    char = lastchar + char
+		    Dim lineend As Integer = InstrB(char, EOL)
+		    If lineend > 0 Then
+		      lastchar = RightB(char, char.LenB - lineend - (EOL.LenB - 1))
+		      char = LeftB(char, lineend + (EOL.LenB - 1))
+		      ret.Write(char)
+		      Exit Do
+		    Else
+		      lastchar = char
+		    End If
+		  Loop
+		  If lastchar <> "" Then ret.Write(lastchar)
+		  ret.Close
+		  Return DefineEncoding(data, encoding)
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub Write(Data As String)
 		  // Part of the Writeable interface.
 		  ' Write Data to the compressed stream.
@@ -248,6 +316,25 @@ Implements Readable,Writeable
 		  // Part of the Writeable interface.
 		  Return mDestination.WriteError Or (mCompressor <> Nil And mCompressor.LastError <> 0)
 		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub WriteLine(Data As String, EOL As String = "")
+		  ' Write Data to the compressed stream followed by an EOL marker.
+		  ' If EOL is not specified then the target platform EOL marker is used by default.
+		  
+		  If mCompressor = Nil Then Raise New IOException
+		  If EOL = "" Then
+		    #If TargetWin32 Then
+		      EOL = EndOfLine.Windows
+		    #ElseIf TargetMacOS Then
+		      EOL = EndOfLine.Macintosh
+		    #ElseIf TargetLinux Then
+		      EOL = EndOfLine.UNIX
+		    #endif
+		  End If
+		  Me.Write(Data + EOL)
+		End Sub
 	#tag EndMethod
 
 
