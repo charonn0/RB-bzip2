@@ -88,20 +88,6 @@ Implements Readable,Writeable
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
-		 Shared Function CreatePipe(InputStream As Readable, OutputStream As Writeable, CompressionLevel As Integer = BZip2.BZ_DEFAULT_COMPRESSION) As BZip2.BZ2Stream
-		  ' Create a compressed stream from two endpoints. Writing to the stream writes compressed bytes to
-		  ' the OutputStream object; reading from the stream decompresses bytes from the InputStream object.
-		  
-		  Dim z As BZip2.BZ2Stream = Create(OutputStream, CompressionLevel)
-		  If z = Nil Then Return Nil
-		  z.mSource = InputStream
-		  z.mDecompressor = New Decompressor()
-		  Return z
-		  
-		End Function
-	#tag EndMethod
-
 	#tag Method, Flags = &h21
 		Private Sub Destructor()
 		  Me.Close()
