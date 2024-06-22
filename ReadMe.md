@@ -6,6 +6,9 @@
 ## Hilights
 * Read and write compressed file or memory streams using a simple [BinaryStream work-alike](https://github.com/charonn0/RB-bzip2/wiki/BZip2.BZ2Stream).
 
+## Become a sponsor
+If you use this code in a commercial project, or just want to show your appreciation, please consider sponsoring me through GitHub. https://github.com/sponsors/charonn0
+
 ## Getting started
 This project provides several different ways to use BZip2. 
 
